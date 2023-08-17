@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const shortId = require("shortid");
 const referals = shortId.generate();
+const crypto = require("crypto");
 const UserSchema = mongoose.Schema(
   {
     firstName: {
@@ -60,15 +61,31 @@ const UserSchema = mongoose.Schema(
     },
     userRole: {
       type: String,
-      enum: ["user", "admin", "super"],
-      default: "user",
+      enum: ["marketer", "vendor", "superAdmin"],
+      default: "marketer",
     },
     refreshToken: {
       type: String,
+    },
+    passwordResetToken: {
+      type: String,
+    },
+    passwordResetTokenExpire: {
+      type: Date,
     },
   },
   { timestamps: true }
 );
 
-const User = mongoose.model("users", UserSchema);
-module.exports = User;
+UserSchema.methods.createToken = function () {
+  const resetToken = crypto.randomBytes(4).toString("hex"); // Convert buffer to hex
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  this.passwordResetTokenExpire = Date.now() + 10 * 60 * 1000; // Added '+' for milliseconds
+  return resetToken;
+};
+
+const UserModel = mongoose.model("User", UserSchema);
+module.exports = UserModel;

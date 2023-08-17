@@ -18,6 +18,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", require("./routes/Auth"));
 app.use("/api/v1/users", require("./routes/User"));
+app.use("/api/v1/forgotpassword", require("./routes/ForgotPassword"));
+app.use("/api/v1/resetpassword", require("./routes/resetToken"));
 mongoose.connection.once("open", () => {
   console.log("database connected successfully");
   app.listen(PORT, () => console.log("listening on port " + PORT));
