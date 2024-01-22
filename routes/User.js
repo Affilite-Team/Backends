@@ -8,10 +8,11 @@ const {
   deleteUser,
   editUser,
 } = require("../controller/User");
+const { verify } = require("jsonwebtoken");
 
 router.post("/signup", signup);
 router.get("/", verifyJwt, getUsers);
-router.get("/:id", getSingleUser);
-router.delete("/:id", deleteUser);
-router.put("/:id", editUser);
+router.get("/:id", verifyJwt, getSingleUser);
+router.delete("/:id", verifyJwt, deleteUser);
+router.put("/:id", verifyJwt, editUser);
 module.exports = router;

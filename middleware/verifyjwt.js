@@ -13,7 +13,9 @@ const verifyJwt = (req, res, next) => {
       next();
     });
   } else {
-    return res.sendStatus(403);
+    return res.status(403).json({
+      msg: "Aunthorised access denied",
+    });
   }
 };
 module.exports = verifyJwt;
