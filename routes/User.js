@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const verifyJwt = require("../middleware/verifyjwt");
+const userVerify = require("../middleware/userRole.js");
 const {
   signup,
   getUsers,
@@ -8,11 +9,10 @@ const {
   deleteUser,
   editUser,
 } = require("../controller/User");
-const { verify } = require("jsonwebtoken");
 
 router.post("/signup", signup);
-router.get("/", verifyJwt, getUsers);
+router.get("/", getUsers);
 router.get("/:id", verifyJwt, getSingleUser);
-router.delete("/:id", verifyJwt, deleteUser);
+router.delete("/profile", verifyJwt, userVerify, deleteUser);
 router.put("/:id", verifyJwt, editUser);
 module.exports = router;

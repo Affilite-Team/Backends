@@ -6,6 +6,7 @@ exports.login = async (req, res) => {
   const { userName, password } = req.body;
 
   const isExist = await userModel.findOne({ userName: userName }).exec();
+  const userID = isExist._id.toString();
   if (!isExist) {
     return res.json({ msg: "Invalid credentials", code: 401 });
   }
@@ -39,18 +40,23 @@ exports.login = async (req, res) => {
   isExist.refreshToken = refreshToken;
   await isExist.save();
 
-  // create a secure cookie to store the refresh token on the web
+  // // create a secure cookie to store the refresh token on the web
   res.cookie("jwt", refreshToken, {
     httpOnly: true,
     secure: true,
     sameSite: true,
     maxAge: 24 * 60 * 60 * 1000,
   });
+
   res.json({
     code: 200,
     msg: "logged in successfully",
+    id: isExist.id,
     email: isExist.email,
     userName: isExist.userName,
+    firstName: isExist.firstName,
+    lastName: isExist.lastName,
+    referalCode: isExist.referalId,
     accessToken: acceToken,
   });
 };
