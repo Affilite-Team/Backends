@@ -1,6 +1,7 @@
 const userModel = require("../model/User");
 const bcrypt = require("bcrypt");
-
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 exports.signup = async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
   const User = new userModel({
@@ -61,8 +62,14 @@ exports.editUser = async (req, res) => {
     data: user,
   });
 };
+
 exports.getSingleUser = async (req, res) => {
-  const user = await userModel.findOne({ _id: req.params.id }).exec();
+  const user = await userModel
+    .findOne(
+      { userName: req.user },
+      "-password -createdAt -updatedAt -userRole -_id"
+    )
+    .exec();
   if (!user) {
     return res.json({
       msg: "User not found",
