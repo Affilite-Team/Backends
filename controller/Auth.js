@@ -12,8 +12,13 @@ exports.login = async (req, res) => {
   }
 
   // check if the password is correct
+
   if (!bcrypt.compare(password, isExist.password)) {
     return res.status(403).json({ msg: "Password does not match" });
+  }
+  const passwordCheck = await bcrypt.compare(password, isExist.password);
+  if (!passwordCheck) {
+    return res.status(403).json({ msg: "Incorrect Credentials" });
   }
 
   // Generate Jwt token
