@@ -10,7 +10,8 @@ DBconnect();
 
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
-app.use(cors(require("./config/corsOptions")));
+// app.use(cors(require("./config/corsOptions")));
+app.use(cors({ origin: "*" }));
 
 app.get("/", (req, res) => {
   res.send("Welcome to Affiliate Marketing");
