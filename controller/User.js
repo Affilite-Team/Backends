@@ -4,6 +4,13 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 exports.signup = async (req, res) => {
   try {
+    const isExist = await userModel.findOne({ email: req.body.email }).exec();
+    if (isExist) {
+      return res.status(400).json({
+        message: "BAD REQUEST",
+        reason: "Email must be unique",
+      });
+    }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const User = new userModel({
       firstName: req.body.firstName,
